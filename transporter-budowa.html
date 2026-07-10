@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Transporter: 75 lat na budowie</title>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700;900&family=Saira:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --dove:#56789B; --dove-d:#3D5C7D; --cream:#F4ECD8; --asphalt:#26262B;
+    --brick:#C0512D; --concrete:#A2A2AA; --amber:#E3A72F; --ok:#5E8C5A; --bad:#B03A3A;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+  html,body{height:100%;background:#17171B;font-family:'Saira',system-ui,sans-serif;color:var(--cream);overflow:hidden}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  #app{position:relative;width:min(100vw,62vh);height:min(161.9vw,100vh);max-width:430px;background:var(--asphalt);overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,.6)}
+  canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .screen{position:absolute;inset:0;display:none;flex-direction:column;padding:18px;background:var(--asphalt);z-index:10;overflow-y:auto}
+  .screen.on{display:flex}
+  h1,h2,h3,.disp{font-family:'Saira Condensed',Impact,'Arial Narrow',sans-serif;text-transform:uppercase;letter-spacing:.03em}
+  /* Sygnatura: dwukolorowy przód T1 w kształcie V */
+  .vhead{position:relative;background:var(--dove);padding:20px 16px 34px;margin:-18px -18px 14px;text-align:center}
+  .vhead::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:26px;
+    background:var(--asphalt);clip-path:polygon(0 100%,0 55%,50% 0,100% 55%,100% 100%)}
+  .badge{width:52px;height:52px;border-radius:50%;background:var(--cream);color:var(--dove-d);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 8px;
+    font-family:'Saira Condensed';font-weight:900;font-size:22px;border:3px solid var(--dove-d)}
+  .vhead h1{font-size:30px;font-weight:900;color:var(--cream);line-height:1.05}
+  .vhead .sub{font-size:13px;color:#CFE0EE;letter-spacing:.18em;text-transform:uppercase;margin-top:4px}
+  .btn{display:block;width:100%;border:0;border-radius:10px;padding:14px;margin-top:12px;cursor:pointer;
+    font-family:'Saira Condensed';font-weight:700;font-size:19px;text-transform:uppercase;letter-spacing:.05em;
+    background:var(--brick);color:#fff}
+  .btn.blue{background:var(--dove)} .btn.ghost{background:#3A3A42;color:var(--cream)}
+  .btn:active{transform:translateY(2px)}
+  .card{background:#2E2E35;border-radius:12px;padding:14px;margin-top:12px}
+  .fact{font-size:14.5px;line-height:1.45;color:#E9E2D0}
+  .fact b{color:var(--amber)}
+  .meta{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .chip{background:#1F1F24;border-radius:6px;padding:5px 9px;font-size:12px;color:var(--concrete)}
+  .chip b{color:var(--cream)}
+  .barlbl{display:flex;justify-content:space-between;font-size:12px;margin:10px 0 4px;color:var(--concrete)}
+  .bar{height:14px;background:#1B1B1F;border-radius:7px;overflow:hidden;position:relative}
+  .bar>i{position:absolute;left:0;top:0;bottom:0;border-radius:7px;transition:width .15s}
+  .bar .red{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(45deg,#B03A3A55,#B03A3A55 6px,#0000 6px,#0000 12px);border-left:2px solid var(--bad)}
+  .loadrow{display:flex;align-items:center;gap:10px;margin-top:10px}
+  .loadrow .ico{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px}
+  .loadrow .nm{flex:1;font-size:14px} .loadrow .nm small{display:block;color:var(--concrete);font-size:11px}
+  .mini{width:44px;height:40px;border-radius:8px;border:0;font-size:20px;font-weight:700;cursor:pointer;color:#fff}
+  .plus{background:var(--ok)} .minus{background:#4A4A52}
+  .qopt{text-align:left;font-size:16px}
+  #hud{position:absolute;left:0;right:0;top:0;padding:8px 10px;z-index:5;display:none;background:linear-gradient(#17171BEE,#17171B00)}
+  #hud .row{display:flex;gap:8px;align-items:center;font-size:11px;color:var(--concrete)}
+  #hud .hbar{flex:1;height:8px;background:#111;border-radius:4px;overflow:hidden}
+  #hud .hbar>i{display:block;height:100%}
+  #hud .top{display:flex;justify-content:space-between;font-family:'Saira Condensed';font-weight:700;font-size:15px;color:var(--cream);margin-bottom:4px}
+  #ctrl{position:absolute;left:0;right:0;bottom:0;z-index:5;display:none;gap:10px;padding:10px;justify-content:space-between}
+  .pedal{flex:1;height:64px;border-radius:12px;border:0;font-family:'Saira Condensed';font-weight:900;font-size:18px;text-transform:uppercase;color:#fff;opacity:.92}
+  #brake{background:var(--bad)} #gas{background:var(--ok)}
+  #toast{position:absolute;left:12px;right:12px;top:96px;z-index:8;background:#17171BE8;border-left:4px solid var(--amber);
+    border-radius:8px;padding:10px 12px;font-size:13.5px;display:none;line-height:1.35}
+  .stars{font-size:34px;text-align:center;letter-spacing:6px;margin:6px 0}
+  .big{font-family:'Saira Condensed';font-weight:900;font-size:44px;text-align:center;color:var(--amber)}
+  .center{text-align:center}
+  .vansvg{display:block;margin:6px auto}
+  #wm{position:absolute;inset:0;z-index:50;pointer-events:none;overflow:hidden;opacity:.13}
+  #wm span{position:absolute;font-family:'Saira Condensed';font-weight:900;font-size:46px;letter-spacing:.2em;color:#fff;transform:rotate(-24deg);white-space:nowrap}
+  #wmfoot{position:absolute;left:0;right:0;bottom:2px;z-index:51;pointer-events:none;text-align:center;font-size:9.5px;color:#8A8A92;letter-spacing:.06em}
+  @media (prefers-reduced-motion: reduce){ .bar>i{transition:none} }
+</style>
+</head>
+<body>
+<div id="wrap"><div id="app">
+  <canvas id="cv" width="430" height="696"></canvas>
+
+  <!-- HUD jazdy -->
+  <div id="hud">
+    <div class="top"><span id="hTrip">→ NA BUDOWĘ</span><span id="hHearts">❤❤❤</span><span id="hSpeed">0 km/h</span></div>
+    <div class="row">🧱<div class="hbar"><i id="hB" style="background:var(--brick)"></i></div>
+        🪣<div class="hbar"><i id="hC" style="background:var(--concrete)"></i></div>
+        🏗<div class="hbar"><i id="hP" style="background:var(--amber)"></i></div></div>
+    <div class="row" style="margin-top:3px">📦<div class="hbar"><i id="hL" style="background:var(--dove)"></i></div><span id="hLtxt">0 kg</span></div>
+  </div>
+  <div id="toast"></div>
+  <div id="ctrl">
+    <button class="pedal" id="brake">⬇ Hamulec</button>
+    <button class="pedal" id="gas">⬆ Gaz</button>
+  </div>
+
+  <!-- MENU -->
+  <div class="screen on" id="sMenu">
+    <div class="vhead">
+      <div class="badge">T</div>
+      <h1>Transporter<br>75 lat na budowie</h1>
+      <div class="sub">1950 – 2026 · autentyczna historia</div>
+    </div>
+    <svg class="vansvg" id="menuVan" width="300" height="120"></svg>
+    <div class="card fact">Poprowadź wszystkie generacje Volkswagena Transportera — od <b>T1 z 1950 r.</b> po <b>nowego Transportera</b>. Wóź cegły i beton, pilnuj <b>ładowności</b> i nie pozwól, by na budowie zabrakło materiału!</div>
+    <div class="card fact" style="font-size:13px">🎮 <b>Sterowanie:</b> stuknij lewą/prawą stronę drogi (lub strzałki ←→), aby zmienić pas. Trzymaj <b>Gaz</b>/<b>Hamulec</b> (lub ↑↓). Omijaj dziury — na wadze przeładowanie kończy się mandatem!</div>
+    <button class="btn" id="bStart">Rozpocznij · rok 1950</button>
+  </div>
+
+  <!-- HISTORIA / intro poziomu -->
+  <div class="screen" id="sStory">
+    <div class="vhead"><div class="badge" id="stBadge">T1</div><h1 id="stTitle"></h1><div class="sub" id="stYears"></div></div>
+    <svg class="vansvg" id="stVan" width="300" height="120"></svg>
+    <div class="card fact" id="stFact"></div>
+    <div class="meta" id="stMeta"></div>
+    <button class="btn blue" id="bToDepot">Jedź do składu materiałów</button>
+  </div>
+
+  <!-- SKŁAD / załadunek -->
+  <div class="screen" id="sDepot">
+    <div class="vhead" style="padding-bottom:30px"><h1 style="font-size:24px">Skład budowlany</h1><div class="sub" id="dGen"></div></div>
+    <div class="card">
+      <div class="barlbl"><span>🧱 Cegły na budowie</span><span id="dBtxt"></span></div>
+      <div class="bar"><i id="dB" style="background:var(--brick)"></i></div>
+      <div class="barlbl"><span>🪣 Beton na budowie</span><span id="dCtxt"></span></div>
+      <div class="bar"><i id="dC" style="background:var(--concrete)"></i></div>
+      <div class="barlbl"><span>🏗 Postęp budowy</span><span id="dPtxt"></span></div>
+      <div class="bar"><i id="dP" style="background:var(--amber)"></i></div>
+      <div class="fact" style="font-size:12px;margin-top:8px;color:var(--concrete)">Ekipa pracuje bez przerwy — zapasy topnieją nawet, gdy stoisz!</div>
+    </div>
+    <div class="card">
+      <div class="loadrow">
+        <div class="ico" style="background:var(--brick)">🧱</div>
+        <div class="nm"><b>Paleta cegieł</b><small>150 kg / szt.</small></div>
+        <button class="mini minus" data-m="b">−</button><button class="mini plus" data-p="b">+</button>
+      </div>
+      <div class="loadrow">
+        <div class="ico" style="background:var(--concrete)">🪣</div>
+        <div class="nm"><b>Beton (worki)</b><small>100 kg / porcja</small></div>
+        <button class="mini minus" data-m="c">−</button><button class="mini plus" data-p="c">+</button>
+      </div>
+      <div class="barlbl"><span>📦 Ładunek</span><span id="dLtxt"></span></div>
+      <div class="bar" id="dLbar"><i id="dL" style="background:var(--dove)"></i><span class="red" id="dRed"></span></div>
+      <div class="fact" id="dWarn" style="font-size:12.5px;margin-top:8px"></div>
+    </div>
+    <button class="btn" id="bGo">Jedź na budowę →</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="screen" id="sQuiz">
+    <div class="vhead" style="padding-bottom:30px"><h1 style="font-size:24px">Quiz historyczny</h1><div class="sub">+300 pkt za dobrą odpowiedź</div></div>
+    <div class="card fact" id="qQ" style="font-size:17px"></div>
+    <button class="btn ghost qopt" data-q="0"></button>
+    <button class="btn ghost qopt" data-q="1"></button>
+    <button class="btn ghost qopt" data-q="2"></button>
+  </div>
+
+  <!-- WYNIK POZIOMU -->
+  <div class="screen" id="sResult">
+    <div class="vhead" style="padding-bottom:30px"><h1 id="rTitle" style="font-size:26px"></h1><div class="sub" id="rSub"></div></div>
+    <div class="stars" id="rStars"></div>
+    <div class="big" id="rScore"></div>
+    <div class="card fact" id="rDetail"></div>
+    <button class="btn" id="bNext"></button>
+  </div>
+
+  <!-- FINAŁ -->
+  <div class="screen" id="sFinal">
+    <div class="vhead"><div class="badge">75</div><h1>Budowa ukończona!</h1><div class="sub">Przejechałeś przez 75 lat historii</div></div>
+    <div class="big" id="fScore"></div>
+    <div class="card fact">Od szkicu <b>Bena Pona z 1947 r.</b> po dzisiejszego Transportera budowanego z ładownością <b>1410 kg</b> — seria T to najlepiej sprzedający się van w historii, z wynikiem ponad <b>12 milionów</b> egzemplarzy. Spora część z nich powstała w <b>Poznaniu</b>. 🇵🇱</div>
+    <button class="btn" id="bAgain">Zagraj jeszcze raz</button>
+  </div>
+  <div id="wmfoot">Wersja demonstracyjna · grafiki poglądowe</div>
+</div></div>
+
+<script>
+"use strict";
+/* ====== DANE HISTORYCZNE (autentyczne) ====== */
+const GENS=[
+ {id:"T1",name:"Transporter T1 „Bulli”",years:"1950–1967",payload:750,body:"#56789B",body2:"#F4ECD8",nose:"v",
+  fact:"Wszystko zaczęło się od odręcznego szkicu holenderskiego importera <b>Bena Pona z 1947 r.</b> Produkcja ruszyła <b>8 marca 1950 r.</b> Silnik z tyłu, napęd na tylne koła i słynna <b>dzielona przednia szyba</b> — technika rodem z Garbusa.",
+  quiz:{q:"W którym roku ruszyła seryjna produkcja Transportera T1?",a:["1947","1950","1956"],ok:1}},
+ {id:"T2",name:"Transporter T2",years:"1967–1979",payload:900,body:"#C0512D",body2:"#F4ECD8",nose:"flat",
+  fact:"W 1967 r. T2 dostał <b>jednolitą przednią szybę</b> i większe nadwozie. Ciekawostka: w <b>Brazylii</b> produkowano go aż do <b>2013 roku</b>! Łącznie powstało ok. 3,5 mln sztuk.",
+  quiz:{q:"Do którego roku produkowano T2 w Brazylii?",a:["1979","1996","2013"],ok:2}},
+ {id:"T3",name:"Transporter T3",years:"1979–1992",payload:1000,body:"#8A6E4B",body2:"#E8DFC8",nose:"box",
+  fact:"T3 był <b>ostatnim Transporterem z silnikiem umieszczonym z tyłu</b>. W 1981 r. padł rekord <b>5 milionów</b> wyprodukowanych aut, a w 1985 r. w Hanowerze zadebiutował <b>Multivan</b>.",
+  quiz:{q:"Który Transporter był ostatnim z silnikiem z tyłu?",a:["T2","T3","T4"],ok:1}},
+ {id:"T4",name:"Transporter T4",years:"1990–2003",payload:1100,body:"#8C2F2F",body2:"#D8D8DC",nose:"short",
+  fact:"<b>9 stycznia 1990 r.</b> — rewolucja: silnik przeniesiono <b>do przodu</b>, pojawił się napęd przednich kół i wersje Syncro 4×4. Od grudnia <b>1993 r. montaż ruszył w Poznaniu</b>.",
+  quiz:{q:"Co zmieniło się w T4 w 1990 roku?",a:["Silnik trafił do przodu","Dostał dzieloną szybę","Był tylko elektryczny"],ok:0}},
+ {id:"T5",name:"Transporter T5",years:"2003–2015",payload:1200,body:"#9FA6AD",body2:"#5B6770",nose:"short",
+  fact:"T5 produkowano m.in. w <b>Poznaniu</b>. Po liftingu w 2009 r. jako <b>pierwszy samochód dostawczy na świecie</b> dostał dwusprzęgłową skrzynię <b>DSG</b>. Ładowność sięgała ok. 1,2 tony.",
+  quiz:{q:"Gdzie produkowano Transportera T5?",a:["Tylko w Hanowerze","M.in. w Poznaniu","W Brazylii"],ok:1}},
+ {id:"T6 / T6.1",name:"Transporter T6 i T6.1",years:"2015–2024",payload:1300,body:"#2E5E8C",body2:"#E8E8EC",nose:"short",
+  fact:"T6 (2015) i T6.1 (2019) przyniosły <b>Digital Cockpit</b>, elektromechaniczne wspomaganie i normę Euro 6. Przestrzeń ładunkowa: od <b>4,3 do aż 9,3 m³</b> (L2, wysoki dach).",
+  quiz:{q:"Ile wynosi maksymalna pojemność ładunkowa T6.1?",a:["6,2 m³","9,3 m³","12 m³"],ok:1}},
+ {id:"T7",name:"Nowy Transporter",years:"od 2024",payload:1410,body:"#E8E8EC",body2:"#26262B",nose:"modern",
+  fact:"Najnowszy Transporter powstaje we współpracy z Fordem. <b>Ładowność do 1410 kg</b> przy DMC 3225 kg czyni go jednym z najpojemniejszych w klasie. Seria T ma na koncie ponad <b>12 mln</b> sprzedanych aut w 75 lat!",
+  quiz:{q:"Jaka jest maksymalna ładowność nowego Transportera?",a:["990 kg","1410 kg","2200 kg"],ok:1}}
+];
+const BRICK_KG=150, CONC_KG=100, OVER=1.5;
+
+/* ====== STAN ====== */
+const S={lvl:0,score:0,state:"menu",
+ stockB:0,stockC:0,needB:0,needC:0,doneB:0,doneC:0,
+ loadB:0,loadC:0,hearts:3,stall:0,fines:0,delivered:0,levelT:0,
+ trip:1,dist:0,tripLen:0,lane:1,laneX:1,speed:0,gas:false,brakeP:false,
+ obs:[],shake:0,stop:0,toastT:0,warned:false};
+
+function gen(){return GENS[S.lvl];}
+function cap(){return gen().payload;}
+function load(){return S.loadB*BRICK_KG+S.loadC*CONC_KG;}
+
+/* ====== EKRANY ====== */
+const $=id=>document.getElementById(id);
+const screens=["sMenu","sStory","sDepot","sQuiz","sResult","sFinal"];
+function show(id){screens.forEach(s=>$(s).classList.toggle("on",s===id));
+ const drive=(id===null);$("hud").style.display=drive?"block":"none";$("ctrl").style.display=drive?"flex":"none";}
+
+/* ====== SYLWETKA BOCZNA (SVG) ======
+   Chcesz prawdziwe zdjęcia? Masz licencję (np. materiały prasowe VW)?
+   Dodaj w GENS pole img:"https://twoj-serwer/t1.png" (PNG z przezroczystym tłem),
+   a gra użyje zdjęcia zamiast rysunku. */
+function vanSide(svg,g){
+ svg.setAttribute("viewBox","0 0 300 120");
+ if(g.img){svg.innerHTML=`<image href="${g.img}" x="0" y="0" width="300" height="120" preserveAspectRatio="xMidYMid meet"/>`;return;}
+ const uid="g"+g.id.replace(/[^A-Za-z0-9]/g,"");
+ const grad=(id,c1,c2)=>`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient>`;
+ const wheels=(hub)=>`
+  <circle cx="80" cy="95" r="17" fill="#17171B"/><circle cx="80" cy="95" r="16" fill="none" stroke="#000" stroke-width="1"/>
+  <circle cx="80" cy="95" r="9.5" fill="${hub}"/><circle cx="80" cy="95" r="3.5" fill="#7A7A80"/>
+  <circle cx="226" cy="95" r="17" fill="#17171B"/><circle cx="226" cy="95" r="9.5" fill="${hub}"/><circle cx="226" cy="95" r="3.5" fill="#7A7A80"/>`;
+ const shadow=`<ellipse cx="152" cy="109" rx="122" ry="6" fill="#00000045"/>`;
+ const glass="#B9D3E6", glassD="#9FBDD4";
+ let s="";
+ switch(g.id){
+ case "T1": s=`<defs>${grad(uid,"#7293B5","#4E6F92")}</defs>${shadow}
+  <path d="M258 94 Q266 94 266 82 L266 68 Q266 50 250 40 L232 30 Q206 16 152 16 L92 16 Q56 16 46 40 L40 58 Q37 68 37 80 L37 86 Q37 94 46 94 Z" fill="url(#${uid})"/>
+  <path d="M37 94 L37 64 L206 64 L238 40 Q252 48 258 56 Q266 64 266 80 Q266 94 258 94 Z" fill="#F4ECD8"/>
+  <path d="M37 64 L206 64 L238 40" fill="none" stroke="#D9CDAF" stroke-width="2"/>
+  <path d="M212 26 L230 40 L212 44 Z" fill="${glass}" stroke="#3E5E7E" stroke-width="1.5"/>
+  <path d="M234 30 L246 42 L234 44 Z" fill="${glass}" stroke="#3E5E7E" stroke-width="1.5"/>
+  <rect x="150" y="26" width="46" height="20" rx="5" fill="${glass}" stroke="#3E5E7E"/>
+  <rect x="96" y="26" width="42" height="20" rx="5" fill="${glass}" stroke="#3E5E7E"/>
+  <rect x="52" y="28" width="32" height="18" rx="6" fill="${glass}" stroke="#3E5E7E"/>
+  <line x1="146" y1="24" x2="146" y2="92" stroke="#3E5E7E" stroke-width="1.6" opacity=".6"/>
+  <circle cx="152" cy="70" r="2" fill="#3E5E7E"/>
+  <g stroke="#C7BB9E" stroke-width="2"><line x1="50" y1="52" x2="62" y2="52"/><line x1="50" y1="56" x2="62" y2="56"/><line x1="50" y1="60" x2="62" y2="60"/></g>
+  <circle cx="254" cy="52" r="6.5" fill="#FFF3CE" stroke="#B9B9BE" stroke-width="2"/>
+  <rect x="238" y="88" width="30" height="6" rx="3" fill="#C9C9CE"/><rect x="34" y="88" width="26" height="6" rx="3" fill="#C9C9CE"/>`;break;
+ case "T2": s=`<defs>${grad(uid,"#D2673F","#B4471F")}</defs>${shadow}
+  <path d="M256 94 Q266 94 266 82 L266 62 Q266 44 248 36 L230 28 Q204 16 150 16 L88 16 Q52 16 44 42 L39 60 Q37 70 37 82 Q37 94 47 94 Z" fill="#F4ECD8"/>
+  <path d="M37 94 L37 60 L266 60 L266 82 Q266 94 256 94 Z" fill="url(#${uid})"/>
+  <line x1="37" y1="60" x2="266" y2="60" stroke="#8F3A1A" stroke-width="2"/>
+  <path d="M216 24 L244 38 Q250 42 250 48 L216 48 Z" fill="${glass}" stroke="#7A4A33" stroke-width="1.5"/>
+  <rect x="158" y="26" width="50" height="22" rx="5" fill="${glass}" stroke="#7A4A33"/>
+  <rect x="102" y="26" width="48" height="22" rx="5" fill="${glass}" stroke="#7A4A33"/>
+  <rect x="50" y="28" width="44" height="20" rx="6" fill="${glass}" stroke="#7A4A33"/>
+  <line x1="154" y1="24" x2="154" y2="92" stroke="#8F3A1A" stroke-width="1.6" opacity=".65"/>
+  <circle cx="160" cy="68" r="2.2" fill="#7A2F12"/>
+  <circle cx="252" cy="50" r="6" fill="#FFF3CE" stroke="#B9B9BE" stroke-width="2"/>
+  <rect x="246" y="30" width="10" height="5" rx="2" fill="#E8A13C"/>
+  <rect x="236" y="88" width="32" height="6" rx="3" fill="#C9C9CE"/><rect x="34" y="88" width="28" height="6" rx="3" fill="#C9C9CE"/>`;break;
+ case "T3": s=`<defs>${grad(uid,"#9C7F5B","#7C6141")}</defs>${shadow}
+  <path d="M262 94 L266 88 L266 60 Q266 46 258 40 L246 30 Q240 22 226 20 L64 20 Q46 20 42 36 L38 62 Q37 72 37 82 L37 94 Z" fill="url(#${uid})"/>
+  <rect x="37" y="72" width="229" height="10" fill="#2B2B30"/>
+  <path d="M224 24 L250 40 L224 44 Z" fill="${glassD}" stroke="#4E463B" stroke-width="1.5"/>
+  <rect x="166" y="26" width="52" height="20" rx="3" fill="${glassD}" stroke="#4E463B"/>
+  <rect x="108" y="26" width="54" height="20" rx="3" fill="${glassD}" stroke="#4E463B"/>
+  <rect x="48" y="26" width="56" height="20" rx="3" fill="${glassD}" stroke="#4E463B"/>
+  <line x1="162" y1="24" x2="162" y2="90" stroke="#5E4E38" stroke-width="1.6" opacity=".7"/>
+  <rect x="166" y="58" width="12" height="4" rx="2" fill="#3B3B40"/>
+  <rect x="248" y="48" width="16" height="8" rx="2" fill="#FFF3CE" stroke="#4A4A50"/>
+  <rect x="240" y="86" width="28" height="8" rx="2" fill="#2B2B30"/><rect x="34" y="86" width="26" height="8" rx="2" fill="#2B2B30"/>`;break;
+ case "T4": s=`<defs>${grad(uid,"#A84545","#7E2B2B")}</defs>${shadow}
+  <path d="M260 94 L266 86 L266 66 Q266 56 256 52 L236 44 L212 24 Q208 20 198 20 L62 20 Q46 20 42 36 L38 62 Q37 72 37 84 L37 94 Z" fill="url(#${uid})"/>
+  <path d="M208 26 L232 44 L204 46 L204 26 Z" fill="${glass}" stroke="#5E2A2A" stroke-width="1.5"/>
+  <rect x="150" y="28" width="50" height="18" rx="3" fill="${glass}" stroke="#5E2A2A"/>
+  <rect x="96" y="28" width="50" height="18" rx="3" fill="${glass}" stroke="#5E2A2A"/>
+  <rect x="46" y="28" width="46" height="18" rx="3" fill="${glass}" stroke="#5E2A2A"/>
+  <path d="M236 46 L262 56" stroke="#5E2A2A" stroke-width="1.5"/>
+  <g stroke="#5E2A2A" stroke-width="2"><line x1="244" y1="50" x2="256" y2="54"/></g>
+  <rect x="37" y="78" width="229" height="8" fill="#3B3B40" rx="2"/>
+  <line x1="146" y1="26" x2="146" y2="90" stroke="#5E2A2A" stroke-width="1.6" opacity=".7"/>
+  <rect x="150" y="60" width="13" height="4" rx="2" fill="#3B1E1E"/>
+  <path d="M246 56 L264 60 L264 66 L246 62 Z" fill="#FFF3CE" stroke="#4A4A50"/>
+  <rect x="238" y="86" width="30" height="8" rx="3" fill="#3B3B40"/><rect x="34" y="86" width="26" height="8" rx="3" fill="#3B3B40"/>`;break;
+ case "T5": s=`<defs>${grad(uid,"#C8CDD2","#8F979F")}</defs>${shadow}
+  <path d="M262 94 L266 86 L266 66 Q266 54 254 50 L234 42 L206 22 Q202 18 192 18 L60 18 Q45 18 41 34 L38 62 Q37 72 37 84 L37 94 Z" fill="url(#${uid})"/>
+  <path d="M202 24 L230 42 L198 44 L198 24 Z" fill="${glass}" stroke="#5B6770" stroke-width="1.5"/>
+  <rect x="144" y="26" width="50" height="18" rx="4" fill="${glass}" stroke="#5B6770"/>
+  <rect x="90" y="26" width="50" height="18" rx="4" fill="${glass}" stroke="#5B6770"/>
+  <rect x="44" y="26" width="42" height="18" rx="4" fill="${glass}" stroke="#5B6770"/>
+  <path d="M240 48 Q260 52 264 58 L264 64 L238 56 Z" fill="#EAF2F8" stroke="#7C8790"/>
+  <path d="M234 44 L264 54" stroke="#7C8790" stroke-width="1.4"/>
+  <line x1="140" y1="24" x2="140" y2="90" stroke="#6B747C" stroke-width="1.5" opacity=".7"/>
+  <rect x="144" y="58" width="13" height="4" rx="2" fill="#4A5158"/>
+  <rect x="37" y="80" width="229" height="6" fill="#75808A" rx="2" opacity=".6"/>
+  <rect x="236" y="87" width="32" height="7" rx="3" fill="#9AA2AA"/><rect x="34" y="87" width="26" height="7" rx="3" fill="#9AA2AA"/>`;break;
+ case "T6 / T6.1": s=`<defs>${grad(uid,"#3E76A8","#24506F")}</defs>${shadow}
+  <path d="M262 94 L266 86 L266 66 Q266 54 254 50 L234 42 L206 22 Q202 18 192 18 L60 18 Q45 18 41 34 L38 62 Q37 72 37 84 L37 94 Z" fill="url(#${uid})"/>
+  <path d="M202 24 L230 42 L198 44 L198 24 Z" fill="${glass}" stroke="#1E3C55" stroke-width="1.5"/>
+  <rect x="144" y="26" width="50" height="18" rx="4" fill="${glass}" stroke="#1E3C55"/>
+  <rect x="90" y="26" width="50" height="18" rx="4" fill="${glass}" stroke="#1E3C55"/>
+  <rect x="44" y="26" width="42" height="18" rx="4" fill="${glass}" stroke="#1E3C55"/>
+  <path d="M242 48 Q262 52 264 58 L264 62 L240 55 Z" fill="#EAF2F8" stroke="#1E3C55"/>
+  <path d="M234 45 L266 56" stroke="#DDE6EE" stroke-width="3"/>
+  <line x1="140" y1="24" x2="140" y2="90" stroke="#1E3C55" stroke-width="1.5" opacity=".7"/>
+  <rect x="144" y="58" width="13" height="4" rx="2" fill="#152D40"/>
+  <rect x="37" y="80" width="229" height="6" fill="#DDE6EE" rx="2" opacity=".5"/>
+  <rect x="236" y="87" width="32" height="7" rx="3" fill="#2B2B30"/><rect x="34" y="87" width="26" height="7" rx="3" fill="#2B2B30"/>`;break;
+ default: s=`<defs>${grad(uid,"#F4F4F7","#CDCDD4")}</defs>${shadow}
+  <path d="M262 94 L266 84 L266 64 Q266 52 252 48 L232 42 L204 22 Q200 18 190 18 L58 18 Q44 18 40 34 L38 62 Q37 72 37 84 L37 94 Z" fill="url(#${uid})"/>
+  <path d="M200 24 L228 42 L196 44 L196 24 Z" fill="#8FB4CC" stroke="#26262B" stroke-width="1.5"/>
+  <rect x="142" y="26" width="50" height="18" rx="4" fill="#8FB4CC" stroke="#26262B"/>
+  <rect x="88" y="26" width="50" height="18" rx="4" fill="#8FB4CC" stroke="#26262B"/>
+  <rect x="42" y="26" width="42" height="18" rx="4" fill="#8FB4CC" stroke="#26262B"/>
+  <path d="M234 44 L266 54 L266 74 L240 66 Z" fill="#26262B"/>
+  <path d="M240 50 Q252 52 258 55" fill="none" stroke="#EAF2F8" stroke-width="3" stroke-linecap="round"/>
+  <path d="M240 50 L240 58" stroke="#EAF2F8" stroke-width="3" stroke-linecap="round"/>
+  <rect x="37" y="82" width="229" height="8" fill="#26262B" rx="3"/>
+  <rect x="60" y="14" width="130" height="4" rx="2" fill="#3A3A42"/>
+  <line x1="138" y1="24" x2="138" y2="90" stroke="#8A8A92" stroke-width="1.5"/>
+  <rect x="142" y="58" width="13" height="4" rx="2" fill="#4A4A52"/>
+  <rect x="236" y="88" width="32" height="6" rx="3" fill="#17171B"/><rect x="34" y="88" width="26" height="6" rx="3" fill="#17171B"/>`;break;
+ }
+ svg.innerHTML=s+wheels(g.id==="T1"||g.id==="T2"?"#F4ECD8":"#D8D8DC");
+}
+
+/* ====== POZIOM ====== */
+function startLevel(){
+ const g=gen();
+ S.needB=Math.round(g.payload*3/50)*50; S.needC=Math.round(g.payload*2/50)*50;
+ S.doneB=0;S.doneC=0;S.stockB=450;S.stockC=350;S.loadB=0;S.loadC=0;
+ S.hearts=3;S.stall=0;S.fines=0;S.delivered=0;S.levelT=0;S.warned=false;
+ $("stBadge").textContent=g.id;$("stTitle").textContent=g.name;$("stYears").textContent=g.years;
+ $("stFact").innerHTML=g.fact;vanSide($("stVan"),g);
+ $("stMeta").innerHTML=`<span class="chip">Ładowność: <b>${g.payload} kg</b></span>
+  <span class="chip">Cel — cegły: <b>${S.needB} kg</b></span><span class="chip">Cel — beton: <b>${S.needC} kg</b></span>`;
+ show("sStory");S.state="story";
+}
+
+/* ====== SKŁAD ====== */
+function depotUI(){
+ const g=gen(),L=load(),over=L>g.payload;
+ $("dGen").textContent=g.name+" · ładowność "+g.payload+" kg";
+ $("dB").style.width=Math.min(100,S.stockB/600*100)+"%";$("dBtxt").textContent=Math.round(S.stockB)+" kg";
+ $("dC").style.width=Math.min(100,S.stockC/600*100)+"%";$("dCtxt").textContent=Math.round(S.stockC)+" kg";
+ const p=(S.doneB+S.doneC)/(S.needB+S.needC)*100;
+ $("dP").style.width=p+"%";$("dPtxt").textContent=Math.floor(p)+"%";
+ $("dL").style.width=Math.min(100,L/(g.payload*OVER)*100)+"%";
+ $("dL").style.background=over?"var(--bad)":"var(--dove)";
+ $("dRed").style.left=(100/OVER)+"%";$("dRed").style.right="0";
+ $("dLtxt").textContent=`${L} / ${g.payload} kg`+(over?" ⚠":"");
+ $("dWarn").innerHTML=over
+  ?`⚠ <b>Przeciążenie o ${L-g.payload} kg!</b> Auto będzie wolniejsze, droga hamowania dłuższa, a na wadze grozi Ci mandat. Możesz jechać… na własne ryzyko.`
+  :`W ładunku: 🧱 ${S.loadB} palet (${S.loadB*BRICK_KG} kg) · 🪣 ${S.loadC} porcji (${S.loadC*CONC_KG} kg)`;
+}
+document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{
+ const t=b.dataset.p,add=t==="b"?BRICK_KG:CONC_KG;
+ if(load()+add<=cap()*OVER){t==="b"?S.loadB++:S.loadC++;depotUI();}
+ else toast("Więcej się nie zmieści — zawieszenie by tego nie przeżyło!");});
+document.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{
+ const t=b.dataset.m;if(t==="b"&&S.loadB>0)S.loadB--;if(t==="c"&&S.loadC>0)S.loadC--;depotUI();});
+$("bGo").onclick=()=>{if(load()===0){toast("Załaduj coś najpierw — budowa czeka!");return;}startTrip(1);};
+
+/* ====== JAZDA ====== */
+const cv=$("cv"),ctx=cv.getContext("2d");
+const W=430,H=696,LANES=[W/2-110,W/2,W/2+110],VY=H-150;
+function startTrip(dir){
+ S.trip=dir;S.dist=0;S.tripLen=dir===1?2600:1700;S.lane=1;S.laneX=1;S.speed=0;S.obs=[];S.stop=0;
+ let d=260,hadW=false;
+ while(d<S.tripLen-300){
+  const r=Math.random();
+  if(dir===1&&!hadW&&r<0.18&&d>S.tripLen*0.45){S.obs.push({y:d,lane:-1,t:"waga",hit:false});hadW=true;}
+  else if(r<0.62)S.obs.push({y:d,lane:Math.floor(Math.random()*3),t:"hole",hit:false});
+  else if(r<0.82)S.obs.push({y:d,lane:Math.floor(Math.random()*3),t:"puddle",hit:false});
+  d+=170+Math.random()*160;
+ }
+ show(null);S.state="drive";
+ $("hTrip").textContent=dir===1?"→ NA BUDOWĘ":"← PO MATERIAŁ";
+}
+function laneTap(dx){if(S.state!=="drive")return;S.lane=Math.max(0,Math.min(2,S.lane+dx));}
+cv.addEventListener("pointerdown",e=>{const r=cv.getBoundingClientRect();laneTap((e.clientX-r.left)/r.width<0.5?-1:1);});
+addEventListener("keydown",e=>{
+ if(e.key==="ArrowLeft")laneTap(-1);if(e.key==="ArrowRight")laneTap(1);
+ if(e.key==="ArrowUp")S.gas=true;if(e.key==="ArrowDown")S.brakeP=true;});
+addEventListener("keyup",e=>{if(e.key==="ArrowUp")S.gas=false;if(e.key==="ArrowDown")S.brakeP=false;});
+const hold=(el,k)=>{el.addEventListener("pointerdown",()=>S[k]=true);
+ ["pointerup","pointerleave","pointercancel"].forEach(ev=>el.addEventListener(ev,()=>S[k]=false));};
+hold($("gas"),"gas");hold($("brake"),"brakeP");
+
+function vmax(){const ratio=S.trip===1?load()/cap():0;
+ return 300*(1.12-0.42*Math.min(ratio,OVER));}
+function updateDrive(dt){
+ if(S.stop>0){S.stop-=dt;S.speed=0;}
+ else{
+  const vm=vmax(),ratio=S.trip===1?load()/cap():0;
+  const acc=160*(1.1-0.5*Math.min(ratio,1.4)),brk=300*(1-0.35*Math.min(ratio,1.4));
+  if(S.gas)S.speed=Math.min(vm,S.speed+acc*dt);
+  else if(S.brakeP)S.speed=Math.max(0,S.speed-brk*dt);
+  else S.speed=Math.max(40,S.speed-60*dt);
+ }
+ S.dist+=S.speed*dt;
+ const steer=0.14*(1-0.4*Math.min(S.trip===1?load()/cap():0,1.4));
+ S.laneX+=(S.lane-S.laneX)*Math.min(1,steer*60*dt);
+ // kolizje
+ for(const o of S.obs){
+  if(o.hit)continue;
+  const oy=VY-(o.y-S.dist);
+  if(oy>VY-34&&oy<VY+34){
+   if(o.t==="waga"){o.hit=true;
+    if(load()>cap()){S.stop=2.6;S.fines+=300;S.score=Math.max(0,S.score-300);
+     toast("🚨 <b>Kontrola wagi!</b> Przekroczona ładowność — mandat 300 pkt i przymusowy postój. DMC to nie sugestia!");}
+    else toast("✅ Waga OK — ładunek w normie. Tak jeździ profesjonalista!");}
+   else if(Math.abs(o.lane-S.laneX)<0.5){o.hit=true;
+    if(o.t==="hole"){
+     const fast=S.speed>vmax()*0.75,over=load()>cap();S.shake=0.4;
+     if(S.trip===1&&load()>0){
+      let pct=(fast?0.10:0.04)*(over?2:1);
+      const lost=Math.round(load()*pct/50)*50;
+      dropCargo(lost);S.speed*=0.55;
+      if(lost>0)toast(`💥 Dziura! Z paki wypadło <b>${lost} kg</b>${over?" — przeciążone auto gubi ładunek dwa razy łatwiej!":". Zwolnij przed dziurami!"}`);
+     }else S.speed*=0.6;
+    }else{S.speed*=0.65;}
+   }
+  }
+ }
+ if(S.dist>=S.tripLen){
+  if(S.trip===1){ // rozładunek
+   S.stockB+=S.loadB*BRICK_KG;S.stockC+=S.loadC*CONC_KG;
+   S.delivered+=load();S.score+=load();S.loadB=0;S.loadC=0;
+   toast("📦 <b>Rozładunek!</b> Materiały trafiły na budowę. Wracamy po kolejny kurs!");
+   startTrip(-1);
+  }else{S.state="depot";show("sDepot");depotUI();}
+ }
+}
+function dropCargo(kg){
+ let left=kg;
+ while(left>=BRICK_KG&&S.loadB>0){S.loadB--;left-=BRICK_KG;}
+ while(left>=CONC_KG&&S.loadC>0){S.loadC--;left-=CONC_KG;}
+}
+
+/* ====== BUDOWA — zużycie ====== */
+function updateSite(dt){
+ const rB=S.needB/130,rC=S.needC/130;let stalled=false;
+ if(S.doneB<S.needB){if(S.stockB>0){const u=Math.min(rB*dt,S.stockB,S.needB-S.doneB);S.stockB-=u;S.doneB+=u;}else stalled=true;}
+ if(S.doneC<S.needC){if(S.stockC>0){const u=Math.min(rC*dt,S.stockC,S.needC-S.doneC);S.stockC-=u;S.doneC+=u;}else stalled=true;}
+ if(stalled){S.stall+=dt;
+  if(S.stall>=7){S.stall=0;S.hearts--;
+   toast(S.hearts>0?`😡 <b>Przestój na budowie!</b> Brakuje materiału — kierownik traci cierpliwość (${"❤".repeat(S.hearts)})`:"");
+   if(S.hearts<=0)endLevel(false);}}
+ if(S.doneB>=S.needB&&S.doneC>=S.needC)endLevel(true);
+}
+
+/* ====== KONIEC POZIOMU ====== */
+function endLevel(win){
+ if(S.state==="result"||S.state==="quiz")return;
+ S.win=win;
+ if(win){S.state="quiz";const q=gen().quiz;$("qQ").innerHTML=q.q;
+  document.querySelectorAll(".qopt").forEach((b,i)=>{b.textContent=(["A","B","C"][i])+". "+q.a[i];});
+  show("sQuiz");}
+ else showResult(false,false);
+}
+document.querySelectorAll(".qopt").forEach(b=>b.onclick=()=>{
+ const ok=+b.dataset.q===gen().quiz.ok;if(ok)S.score+=300;
+ showResult(true,ok);});
+function showResult(win,quizOk){
+ S.state="result";
+ const timeBonus=win?Math.max(0,Math.round((200-S.levelT)*3)):0;
+ if(win)S.score+=timeBonus+S.hearts*100;
+ $("rTitle").textContent=win?"Etap ukończony!":"Budowa stanęła…";
+ $("rSub").textContent=gen().name;
+ $("rStars").textContent=win?"★".repeat(S.hearts)+"☆".repeat(3-S.hearts):"☆☆☆";
+ $("rScore").textContent=S.score+" pkt";
+ $("rDetail").innerHTML=win
+  ?`Dostarczono: <b>${S.delivered} kg</b> materiałów<br>Serca: +${S.hearts*100} pkt · Tempo: +${timeBonus} pkt<br>Quiz: ${quizOk?"<b style='color:#8FBF8A'>poprawnie! +300 pkt</b>":"niestety źle — zapamiętaj tę datę 😉"}${S.fines?`<br>Mandaty: <b style='color:#D98B8B'>−${S.fines} pkt</b>`:""}`
+  :"Ekipa poszła do domu — zabrakło materiału. Wskazówka: nie czekaj, aż zapasy spadną do zera, i uważaj na dziury przy pełnej pace.";
+ $("bNext").textContent=win?(S.lvl<GENS.length-1?"Następna generacja →":"Zobacz finał"):"Spróbuj ponownie";
+ show("sResult");
+}
+$("bNext").onclick=()=>{
+ if(!S.win){startLevel();return;}
+ if(S.lvl<GENS.length-1){S.lvl++;startLevel();}
+ else{$("fScore").textContent=S.score+" pkt";show("sFinal");S.state="final";}
+};
+$("bAgain").onclick=()=>{S.lvl=0;S.score=0;startLevel();};
+$("bStart").onclick=()=>startLevel();
+$("bToDepot").onclick=()=>{S.state="depot";show("sDepot");depotUI();};
+
+/* ====== TOAST ====== */
+function toast(html){if(!html)return;$("toast").innerHTML=html;$("toast").style.display="block";S.toastT=3.4;}
+
+/* ====== RYSOWANIE ====== */
+function drawVanTop(x,y){
+ const g=gen();ctx.save();ctx.translate(x,y);
+ if(S.shake>0)ctx.translate((Math.random()-0.5)*8*S.shake,(Math.random()-0.5)*8*S.shake);
+ ctx.fillStyle="#00000055";ctx.beginPath();ctx.ellipse(3,6,26,42,0,0,7);ctx.fill();
+ // koła
+ ctx.fillStyle="#111";[[-24,-26],[24,-26],[-24,26],[24,26]].forEach(([a,b])=>ctx.fillRect(a-4,b-9,8,18));
+ // nadwozie
+ ctx.fillStyle=g.body;rr(-23,-40,46,80,g.nose==="v"?16:9);ctx.fill();
+ ctx.fillStyle=g.body2;rr(-23,-6,46,44,7);ctx.fill();
+ // szyba
+ ctx.fillStyle="#BFD4E6";rr(-17,-34,34,12,4);ctx.fill();
+ if(g.nose==="v"){ctx.strokeStyle=g.body;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,-34);ctx.lineTo(0,-22);ctx.stroke();
+  ctx.fillStyle=g.body2;ctx.beginPath();ctx.arc(0,-14,5,0,7);ctx.fill();}
+ // ładunek na pace (wizualnie)
+ if(S.trip===1&&load()>0){ctx.fillStyle=S.loadB>0?"var(--brick)":"#888";
+  ctx.fillStyle=S.loadB>0?"#C0512D":"#9A9AA2";
+  const n=Math.min(6,Math.ceil(load()/300));
+  for(let i=0;i<n;i++){ctx.fillStyle=i%2?"#C0512D":"#9A9AA2";ctx.fillRect(-16+(i%2)*17,2+Math.floor(i/2)*13,15,11);}}
+ ctx.restore();S.shake=Math.max(0,S.shake-0.05);
+}
+function rr(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);}
+function drawRoad(){
+ ctx.fillStyle="#2F5233";ctx.fillRect(0,0,W,H); // pobocze/trawa
+ ctx.fillStyle="#33333A";ctx.fillRect(W/2-170,0,340,H);
+ ctx.strokeStyle="#F4ECD8";ctx.lineWidth=4;ctx.setLineDash([26,30]);
+ const off=-(S.dist%56);
+ [W/2-55,W/2+55].forEach(x=>{ctx.beginPath();ctx.moveTo(x,off-56);ctx.lineTo(x,H+56);ctx.stroke();});
+ ctx.setLineDash([]);
+ ctx.fillStyle="#F4ECD8";ctx.fillRect(W/2-170,0,5,H);ctx.fillRect(W/2+165,0,5,H);
+ // obiekty
+ for(const o of S.obs){
+  const oy=VY-(o.y-S.dist);if(oy<-80||oy>H+80)continue;
+  if(o.t==="waga"){
+   ctx.fillStyle=o.hit?"#44444C":"#E3A72F";ctx.fillRect(W/2-170,oy-10,340,20);
+   ctx.fillStyle="#26262B";ctx.font="900 15px 'Saira Condensed'";ctx.textAlign="center";
+   ctx.fillText("⚖ KONTROLA WAGI",W/2,oy+5);
+  }else if(o.t==="hole"){
+   ctx.fillStyle="#17171B";ctx.beginPath();ctx.ellipse(LANES[o.lane],oy,30,16,0,0,7);ctx.fill();
+   ctx.strokeStyle="#0B0B0D";ctx.lineWidth=3;ctx.stroke();
+  }else{
+   ctx.fillStyle="#5F7E9B99";ctx.beginPath();ctx.ellipse(LANES[o.lane],oy,34,14,0,0,7);ctx.fill();
+  }
+ }
+ // meta
+ const fy=VY-(S.tripLen-S.dist);
+ if(fy>-60){ctx.font="34px serif";ctx.textAlign="center";
+  ctx.fillText(S.trip===1?"🏗":"🏬",W/2,fy);}
+}
+function drawHUD(){
+ $("hB").style.width=Math.min(100,S.stockB/600*100)+"%";
+ $("hC").style.width=Math.min(100,S.stockC/600*100)+"%";
+ $("hP").style.width=((S.doneB+S.doneC)/(S.needB+S.needC)*100)+"%";
+ $("hL").style.width=Math.min(100,load()/(cap()*OVER)*100)+"%";
+ $("hL").style.background=load()>cap()?"var(--bad)":"var(--dove)";
+ $("hLtxt").textContent=load()+" kg";
+ $("hHearts").textContent="❤".repeat(S.hearts)+"🖤".repeat(3-S.hearts);
+ $("hSpeed").textContent=Math.round(S.speed/3)+" km/h";
+ if(S.stockB<120&&S.trip!==1&&!S.warned){S.warned=true;toast("⚠ Cegły na budowie na wyczerpaniu — gazu!");}
+ if(S.stockB>200)S.warned=false;
+}
+
+/* ====== PĘTLA ====== */
+let last=performance.now();
+function loop(t){
+ const dt=Math.min(0.05,(t-last)/1000);last=t;
+ if(["depot","drive"].includes(S.state)){S.levelT+=dt;updateSite(dt);}
+ if(S.state==="drive"){updateDrive(dt);drawRoad();drawVanTop(LANES[0]+(S.laneX)*(LANES[1]-LANES[0]),VY);drawHUD();}
+ if(S.state==="depot")depotUI();
+ if(S.toastT>0){S.toastT-=dt;if(S.toastT<=0)$("toast").style.display="none";}
+ requestAnimationFrame(loop);
+}
+vanSide($("menuVan"),GENS[0]);
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
