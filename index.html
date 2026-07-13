@@ -30,7 +30,6 @@
   html, body {
     min-height: 100%;
     background: var(--bg-dark);
-    /* Młodzieżowa, gamingowa siatka 3D w tle */
     background-image: 
       linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px),
@@ -66,7 +65,6 @@
     align-items: center;
   }
 
-  /* Stylizowane gamingowe logo VW */
   .badge-logo {
     width: 68px;
     height: 68px;
@@ -109,7 +107,6 @@
     text-transform: uppercase;
   }
 
-  /* Nowoczesny licznik gier */
   .game-count {
     background: rgba(57, 255, 20, 0.1);
     border: 1px solid var(--neon-green);
@@ -123,7 +120,6 @@
     box-shadow: inset 0 0 4px rgba(57, 255, 20, 0.2);
   }
 
-  /* Kafelki w stylu Glassmorphism */
   .tile {
     display: block;
     text-decoration: none;
@@ -162,7 +158,6 @@
     margin-top: 2px;
   }
 
-  /* UX-owy soczysty przycisk Graj */
   .tHead .go {
     margin-left: auto;
     font-family: 'Poppins', sans-serif;
@@ -184,7 +179,6 @@
     box-shadow: 0 2px 6px rgba(255, 107, 0, 0.4);
   }
 
-  /* Kontener na grafiki i przyszłe rendery */
   .art {
     display: block;
     width: 100%;
@@ -194,11 +188,15 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   }
   
+  /* TUTAJ JEST ZAKTUALIZOWANY STYL DLA ZDJĘĆ Z AUTOMATYCZNYM CIENIEM */
   img.art {
     object-fit: contain;
     padding: 8px 16px;
-    /* Delikatne podświetlenie pod renderem 3D */
-    background: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.08) 0%, rgba(5, 11, 20, 0.4) 70%);
+    /* Delikatna niebieska poświata z tyłu */
+    background: radial-gradient(circle at 50% 60%, rgba(0, 240, 255, 0.12) 0%, rgba(5, 11, 20, 0.5) 70%);
+    /* Magiczny, inteligentny cień generowany pod kształtem auta PNG */
+    filter: drop-shadow(0px 15px 10px rgba(0, 0, 0, 0.65)) 
+            drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.4));
   }
 
   .best {
@@ -229,7 +227,6 @@
 </head>
 <body><div id="app">
   <header>
-    <!-- Nowoczesny logotyp w klimacie gaming/tech -->
     <div class="badge-logo">
       <svg viewBox="0 0 24 24">
         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15.5h-2v-2h2v2zm0-4h-2V7h2v6.5zm5 4h-2v-2h2v2zm0-4h-2V7h2v6.5z" opacity="0.2"/>
@@ -371,7 +368,7 @@
     </svg>
   </a>
 
-  <footer>Wersja demonstracyjna · Grafiki 3D · Gry edukacyjne</footer>
+  <footer>Wersja demonstracyjna · Grafiki poglądowe · Gry edukacyjne</footer>
 </div>
 
 <script>
