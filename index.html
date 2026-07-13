@@ -4,17 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>VW Garaż Gier</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg-dark: #050b14;
-    --card-bg: rgba(19, 39, 61, 0.45);
-    --card-border: rgba(255, 255, 255, 0.08);
-    --neon-blue: #00f0ff;
-    --neon-green: #39ff14;
+    --bg-sand: #f4f0e6;
+    --grid-color: rgba(25, 50, 81, 0.04);
+    --navy-main: #193251;
+    --navy-muted: #53677f;
+    --card-bg: #ffffff;
+    --card-border: #193251;
     --neon-orange: linear-gradient(135deg, #ff6b00, #ff8e3c);
-    --text-main: #ffffff;
-    --text-muted: #8fa0b5;
   }
 
   * {
@@ -24,18 +23,17 @@
     -webkit-tap-highlight-color: transparent;
     user-select: none;
     -webkit-user-select: none;
-    -webkit-touch-callout: none;
   }
 
   html, body {
     min-height: 100%;
-    background: #F0E6D2;
-    background-image:
-      linear-gradient(rgba(150, 120, 80, 0.10) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(150, 120, 80, 0.10) 1px, transparent 1px);
-    background-size: 30px 30px, 30px 30px;
+    background: var(--bg-sand);
+    background-image: 
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 24px 24px;
     font-family: 'Inter', system-ui, sans-serif;
-    color: var(--text-main);
+    color: var(--navy-main);
   }
 
   body {
@@ -52,12 +50,11 @@
     font-family: 'Poppins', sans-serif;
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
   }
 
   header {
-    position: relative;
-    padding: 35px 16px 25px;
+    padding: 40px 16px 20px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -65,30 +62,27 @@
   }
 
   .badge-logo {
-    width: 68px;
-    height: 68px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
-    background: rgba(5, 11, 20, 0.8);
-    border: 2px solid var(--neon-blue);
-    box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+    background: var(--navy-main);
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 16px;
+    box-shadow: 0 8px 16px rgba(25, 50, 81, 0.2);
   }
 
   .badge-logo svg {
-    width: 38px;
-    height: 38px;
-    fill: var(--neon-blue);
-    filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.6));
+    width: 32px;
+    height: 32px;
+    fill: var(--bg-sand);
   }
 
   header h1 {
-    font-size: 30px;
+    font-size: 32px;
     line-height: 1.1;
-    color: #ffffff;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    color: var(--navy-main);
   }
 
   header .sub-container {
@@ -100,127 +94,109 @@
 
   header .sub {
     font-size: 11px;
-    font-weight: 600;
-    color: var(--text-muted);
-    letter-spacing: 0.15em;
+    font-weight: 700;
+    color: var(--navy-muted);
+    letter-spacing: 0.12em;
     text-transform: uppercase;
   }
 
   .game-count {
-    background: rgba(57, 255, 20, 0.1);
-    border: 1px solid var(--neon-green);
-    color: var(--neon-green);
+    background: var(--navy-main);
+    color: #ffffff;
     font-size: 10px;
-    font-weight: 800;
-    padding: 2px 8px;
+    font-weight: 700;
+    padding: 3px 10px;
     border-radius: 20px;
     letter-spacing: 0.05em;
-    text-shadow: 0 0 4px rgba(57, 255, 20, 0.4);
-    box-shadow: inset 0 0 4px rgba(57, 255, 20, 0.2);
   }
 
+  /* Kafelki w stylu Trendy Neo-Minimalism */
   .tile {
     display: block;
     text-decoration: none;
-    color: var(--text-main);
-    border-radius: 20px;
+    color: var(--navy-main);
+    border-radius: 24px;
     overflow: hidden;
-    margin-top: 18px;
+    margin-top: 20px;
     background: var(--card-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--card-border);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.2s;
+    border: 2px solid var(--navy-main);
+    box-shadow: 0 10px 0px rgba(25, 50, 81, 0.15);
+    transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s;
   }
 
   .tile:active {
-    transform: scale(0.97);
+    transform: translateY(4px);
+    box-shadow: 0 6px 0px rgba(25, 50, 81, 0.15);
   }
 
   .tHead {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 16px 18px 12px;
+    padding: 20px 20px 16px;
   }
 
   .tHead .model {
-    font-size: 24px;
-    line-height: 1.2;
+    font-size: 26px;
+    line-height: 1.1;
   }
 
   .tHead .game {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
-    color: var(--text-muted);
+    color: var(--navy-muted);
     margin-top: 2px;
   }
 
   .tHead .go {
     margin-left: auto;
     font-family: 'Poppins', sans-serif;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 14px;
-    letter-spacing: 0.02em;
     background: var(--neon-orange);
     color: #ffffff;
-    border-radius: 12px;
-    padding: 8px 16px;
-    box-shadow: 0 4px 14px rgba(255, 107, 0, 0.4), inset 0 -2px 0px rgba(0,0,0,0.2);
+    border-radius: 14px;
+    padding: 10px 20px;
+    box-shadow: 0 4px 10px rgba(255, 107, 0, 0.3);
     display: inline-flex;
     align-items: center;
-    transition: transform 0.1s;
-  }
-
-  .tile:active .go {
-    transform: translateY(1px);
-    box-shadow: 0 2px 6px rgba(255, 107, 0, 0.4);
   }
 
   .art {
     display: block;
     width: 100%;
-    height: 110px;
-    background: rgba(5, 11, 20, 0.4);
-    border-top: 1px solid rgba(255, 255, 255, 0.03);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    height: 120px;
+    background: #000000;
+    border-top: 2px solid var(--navy-main);
+    border-bottom: 2px solid var(--navy-main);
   }
   
-  /* TUTAJ JEST ZAKTUALIZOWANY STYL DLA ZDJĘĆ Z AUTOMATYCZNYM CIENIEM */
   img.art {
     object-fit: contain;
-    padding: 8px 16px;
-    /* Delikatna niebieska poświata z tyłu */
-    background: radial-gradient(circle at 50% 60%, rgba(0, 240, 255, 0.12) 0%, rgba(5, 11, 20, 0.5) 70%);
-    /* Magiczny, inteligentny cień generowany pod kształtem auta PNG */
-    filter: drop-shadow(0px 15px 10px rgba(0, 0, 0, 0.65)) 
-            drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.4));
+    padding: 4px 0;
   }
 
   .best {
-    padding: 12px 18px;
-    font-size: 12px;
-    color: var(--text-muted);
-    background: rgba(0, 0, 0, 0.15);
+    padding: 14px 20px;
+    font-size: 13px;
+    color: var(--navy-muted);
+    background: rgba(25, 50, 81, 0.03);
     display: flex;
     align-items: center;
     gap: 6px;
-    border-top: 1px solid rgba(255,255,255,0.02);
   }
   
   .best b {
-    color: #fff;
-    font-weight: 600;
+    color: var(--navy-main);
+    font-weight: 700;
   }
 
   footer {
     text-align: center;
-    font-size: 11px;
-    font-weight: 500;
-    color: #4a5d73;
-    letter-spacing: 0.03em;
-    margin-top: 35px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy-muted);
+    margin-top: 40px;
   }
 </style>
 </head>
@@ -228,9 +204,7 @@
   <header>
     <div class="badge-logo">
       <svg viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15.5h-2v-2h2v2zm0-4h-2V7h2v6.5zm5 4h-2v-2h2v2zm0-4h-2V7h2v6.5z" opacity="0.2"/>
-        <path d="M7.5 14.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zM16.5 14.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5z"/>
-        <path d="M21.93 11.21c-.2-.97-.62-1.89-1.22-2.69l-1.46 1.46C19.64 10.51 19.83 11.24 19.92 12H22c-.02-.27-.04-.53-.07-.79zM12 2c-5.52 0-10 4.48-10 10 0 1 .15 1.97.42 2.89L3.9 13.4c-.26-.45-.46-.94-.59-1.4h2.12c.15.92.54 1.77 1.12 2.47l-1.5 1.5c-1.07-1.46-1.74-3.23-1.87-5.16l2.1-.28c.24-1.28.84-2.44 1.71-3.37L5.5 5.66c-1.42 1.5-2.4 3.4-2.77 5.51l2.09.28zM12 4c4.41 0 8 3.59 8 8 0 1.05-.21 2.05-.58 2.97l1.5 1.5c.67-1.28 1.08-2.73 1.08-4.27 0-5.52-4.48-10-10-10S2 6.48 2 12c0 1.54.41 2.99 1.08 4.27l1.5-1.5C4.21 14.05 4 13.05 4 12c0-4.41 3.59-8 8-8z"/>
+        <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3-3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
       </svg>
     </div>
     <h1>VW Garaż Gier</h1>
@@ -244,25 +218,24 @@
   <a class="tile" href="caddy-paczki.html">
     <div class="tHead">
       <div>
-        <div class="model" style="color:#FFB800">Caddy</div>
-        <div class="game">Ekspres Paczkowy · układanka logiczna</div>
+        <div class="model" style="color:#ffae00">Caddy</div>
+        <div class="game">Ekspres Paczkowy · układanka</div>
       </div>
       <span class="go">GRAJ ›</span>
     </div>
     <svg class="art" viewBox="0 0 300 96" preserveAspectRatio="xMidYMax meet">
-      <rect width="300" height="96" fill="transparent"/>
-      <ellipse cx="130" cy="88" rx="105" ry="5" fill="#00000077"/>
-      <path d="M40 82 L40 48 Q40 38 52 36 L150 34 L176 50 L206 54 Q216 58 216 68 L216 82 Z" fill="#FFB800"/>
-      <path d="M40 64 L216 64 L216 82 L40 82 Z" fill="#EAEFFF"/>
-      <path d="M154 38 L174 50 L152 52 Z" fill="#13273D"/>
-      <rect x="104" y="40" width="44" height="14" rx="3" fill="#13273D"/>
-      <rect x="56" y="40" width="44" height="14" rx="3" fill="#13273D"/>
-      <circle cx="80" cy="84" r="12" fill="#050B14"/><circle cx="80" cy="84" r="6" fill="#8FA0b5"/>
-      <circle cx="178" cy="84" r="12" fill="#050B14"/><circle cx="178" cy="84" r="6" fill="#8FA0b5"/>
-      <g transform="translate(232,30)"><rect x="0" y="22" width="20" height="18" rx="2" fill="#C89A5E"/>
-      <rect x="24" y="22" width="20" height="18" rx="2" fill="#B0763A"/>
-      <rect x="12" y="2" width="20" height="18" rx="2" fill="#FFB800"/>
-      <text x="18" y="16" font-size="10" text-anchor="middle" fill="#050B14">★</text></g>
+      <rect width="300" height="96" fill="#111"/>
+      <path d="M50 82 L50 48 Q50 38 62 36 L160 34 L186 50 L216 54 Q226 58 226 68 L226 82 Z" fill="#ffae00"/>
+      <path d="M40 64 L226 64 L226 82 L40 82 Z" fill="#EAEFFF" opacity="0"/>
+      <path d="M164 38 L184 50 L162 52 Z" fill="#0a1420"/>
+      <rect x="114" y="40" width="44" height="14" rx="3" fill="#0a1420"/>
+      <rect x="66" y="40" width="44" height="14" rx="3" fill="#0a1420"/>
+      <g transform="translate(242,32)"><rect x="0" y="20" width="18" height="16" rx="2" fill="#C89A5E"/>
+      <rect x="21" y="20" width="18" height="16" rx="2" fill="#B0763A"/>
+      <rect x="10" y="2" width="18" height="16" rx="2" fill="#ffae00"/>
+      <text x="19" y="15" font-size="9" text-anchor="middle" fill="#111">★</text></g>
+      <circle cx="90" cy="84" r="12" fill="#000"/><circle cx="90" cy="84" r="6" fill="#555"/>
+      <circle cx="188" cy="84" r="12" fill="#000"/><circle cx="188" cy="84" r="6" fill="#555"/>
     </svg>
   </a>
 
@@ -270,23 +243,21 @@
   <a class="tile" href="transporter-budowa.html">
     <div class="tHead">
       <div>
-        <div class="model" style="color:#66B2FF">Transporter</div>
-        <div class="game">75 lat na budowie · wyścig z czasem</div>
+        <div class="model" style="color:#2d7cdb">Transporter</div>
+        <div class="game">75 lat na budowie · wyścig</div>
       </div>
       <span class="go">GRAJ ›</span>
     </div>
     <svg class="art" viewBox="0 0 300 96" preserveAspectRatio="xMidYMax meet">
-      <rect width="300" height="96" fill="transparent"/>
-      <ellipse cx="150" cy="88" rx="120" ry="5" fill="#00000077"/>
-      <path d="M50 82 L50 46 Q50 32 66 30 L166 28 Q186 28 192 36 L206 48 Q216 52 216 62 L216 82 Z" fill="#3385FF"/>
+      <rect width="300" height="96" fill="#111"/>
+      <path d="M50 82 L50 46 Q50 32 66 30 L166 28 Q186 28 192 36 L206 48 Q216 52 216 62 L216 82 Z" fill="#2d7cdb"/>
       <path d="M50 82 L50 60 L170 60 L194 44 Q206 50 212 56 Q216 60 216 70 L216 82 Z" fill="#EAEFFF"/>
-      <path d="M172 34 L186 44 L172 47 Z" fill="#13273D"/><path d="M190 37 L199 45 L190 47 Z" fill="#13273D"/>
-      <rect x="120" y="36" width="38" height="16" rx="4" fill="#13273D"/>
-      <rect x="76" y="36" width="36" height="16" rx="4" fill="#13273D"/>
-      <circle cx="204" cy="52" r="5" fill="#FFF3CE" stroke="#B9B9BE" stroke-width="2"/>
-      <circle cx="88" cy="84" r="12" fill="#050B14"/><circle cx="88" cy="84" r="6" fill="#EAEFFF"/>
-      <circle cx="182" cy="84" r="12" fill="#050B14"/><circle cx="182" cy="84" r="6" fill="#EAEFFF"/>
-      <text x="242" y="55" font-family="Poppins" font-weight="900" font-size="24" fill="#193251">1950</text>
+      <path d="M172 34 L186 44 L172 47 Z" fill="#0a1420"/>
+      <rect x="120" y="36" width="38" height="16" rx="4" fill="#0a1420"/>
+      <rect x="76" y="36" width="36" height="16" rx="4" fill="#0a1420"/>
+      <circle cx="90" cy="84" r="12" fill="#000"/><circle cx="90" cy="84" r="6" fill="#EAEFFF"/>
+      <circle cx="182" cy="84" r="12" fill="#000"/><circle cx="182" cy="84" r="6" fill="#EAEFFF"/>
+      <text x="242" y="55" font-family="Poppins" font-weight="900" font-size="24" fill="#2a4258">1950</text>
     </svg>
   </a>
 
@@ -294,23 +265,22 @@
   <a class="tile" href="multivan-przewozy.html">
     <div class="tHead">
       <div>
-        <div class="model" style="color:#FF7A00">Multivan</div>
-        <div class="game">Miejskie Przewozy · strategia logistyczna</div>
+        <div class="model" style="color:#ff6b00">Multivan</div>
+        <div class="game">Miejskie Przewozy · strategia</div>
       </div>
       <span class="go">GRAJ ›</span>
     </div>
     <svg class="art" viewBox="0 0 300 96" preserveAspectRatio="xMidYMax meet">
-      <rect width="300" height="96" fill="transparent"/>
-      <ellipse cx="150" cy="88" rx="118" ry="5" fill="#00000077"/>
-      <path d="M46 82 L46 44 Q46 32 62 30 L192 28 L222 46 L244 50 Q254 54 254 64 L254 82 Z" fill="#FF7A00"/>
+      <rect width="300" height="96" fill="#111"/>
+      <path d="M46 82 L46 44 Q46 32 62 30 L192 28 L222 46 L244 50 Q254 54 254 64 L254 82 Z" fill="#ff6b00"/>
       <path d="M46 60 L254 60 L254 82 L46 82 Z" fill="#EAEFFF"/>
-      <path d="M198 32 L220 46 L194 48 L194 32 Z" fill="#13273D"/>
-      <rect x="142" y="34" width="46" height="16" rx="3" fill="#13273D"/>
-      <rect x="92" y="34" width="46" height="16" rx="3" fill="#13273D"/>
-      <rect x="52" y="36" width="36" height="14" rx="3" fill="#13273D"/>
-      <circle cx="88" cy="84" r="12" fill="#050B14"/><circle cx="88" cy="84" r="6" fill="#8FA0b5"/>
-      <circle cx="214" cy="84" r="12" fill="#050B14"/><circle cx="214" cy="84" r="6" fill="#8FA0b5"/>
-      <g font-size="11"><text x="106" y="46">🧍</text><text x="126" y="46">🧍</text><text x="156" y="46">🧍</text></g>
+      <path d="M198 32 L220 46 L194 48 L194 32 Z" fill="#0a1420"/>
+      <rect x="142" y="34" width="46" height="16" rx="3" fill="#0a1420"/>
+      <rect x="92" y="34" width="46" height="16" rx="3" fill="#0a1420"/>
+      <rect x="52" y="36" width="36" height="14" rx="3" fill="#0a1420"/>
+      <circle cx="90" cy="84" r="12" fill="#000"/><circle cx="90" cy="84" r="6" fill="#555"/>
+      <circle cx="214" cy="84" r="12" fill="#000"/><circle cx="214" cy="84" r="6" fill="#555"/>
+      <g font-size="11"><text x="108" y="46">🧍</text><text x="128" y="46">🧍</text><text x="158" y="46">🧍</text></g>
     </svg>
   </a>
 
@@ -318,25 +288,24 @@
   <a class="tile" href="amarok-gorski-kurs.html">
     <div class="tHead">
       <div>
-        <div class="model" style="color:#A3B3C2">Amarok</div>
+        <div class="model" style="color:#8c98a4">Amarok</div>
         <div class="game">Górski Kurs · fizyka i refleks</div>
       </div>
       <span class="go">GRAJ ›</span>
     </div>
     <svg class="art" viewBox="0 0 300 96" preserveAspectRatio="xMidYMax meet">
-      <rect width="300" height="96" fill="transparent"/>
-      <path d="M0 96 L0 70 Q60 34 130 56 Q210 78 300 46 L300 96 Z" fill="#0d1f36"/>
-      <path d="M196 30 L226 66 L166 66 Z" fill="#183454"/><path d="M196 30 L206 42 L186 42 Z" fill="#EAEFFF"/>
-      <ellipse cx="128" cy="88" rx="92" ry="5" fill="#00000077"/>
-      <rect x="52" y="52" width="64" height="26" rx="4" fill="#2E3338"/>
-      <rect x="58" y="38" width="17" height="14" rx="2" fill="#B8905A"/>
-      <rect x="78" y="38" width="17" height="14" rx="2" fill="#B8905A"/>
-      <path d="M116 78 L116 46 Q116 38 126 36 L154 34 L176 48 L202 52 Q210 56 210 64 L210 78 Z" fill="#1f262e"/>
-      <path d="M128 40 L152 38 L168 48 L128 48 Z" fill="#547896"/>
-      <rect x="52" y="72" width="158" height="6" fill="#FF5500"/>
-      <circle cx="88" cy="82" r="13" fill="#050B14"/><circle cx="88" cy="82" r="6" fill="#3A3A40"/>
-      <circle cx="182" cy="82" r="13" fill="#050B14"/><circle cx="182" cy="82" r="6" fill="#3A3A40"/>
-      <g transform="translate(248,44)"><rect x="-6" y="-8" width="12" height="14" rx="2" fill="#FF5500"/>
+      <rect width="300" height="96" fill="#111"/>
+      <path d="M0 96 L0 72 Q60 40 130 60 Q210 82 300 52 L300 96 Z" fill="#1a2c40"/>
+      <path d="M196 34 L226 68 L166 68 Z" fill="#26405c"/><path d="M196 34 L206 46 L186 46 Z" fill="#EAEFFF"/>
+      <rect x="52" y="54" width="64" height="24" rx="4" fill="#2E3338"/>
+      <rect x="58" y="40" width="17" height="14" rx="2" fill="#B8905A"/>
+      <rect x="78" y="40" width="17" height="14" rx="2" fill="#B8905A"/>
+      <path d="M116 78 L116 48 Q116 40 126 38 L154 36 L176 50 L202 54 Q210 58 210 66 L210 78 Z" fill="#1f262e"/>
+      <path d="M128 42 L152 40 L168 50 L128 50 Z" fill="#547896"/>
+      <rect x="52" y="72" width="158" height="6" fill="#ff6b00"/>
+      <circle cx="90" cy="84" r="12" fill="#000"/><circle cx="90" cy="84" r="6" fill="#3A3A40"/>
+      <circle cx="184" cy="84" r="12" fill="#000"/><circle cx="184" cy="84" r="6" fill="#3A3A40"/>
+      <g transform="translate(250,48)"><rect x="-6" y="-8" width="12" height="14" rx="2" fill="#ff6b00"/>
       <rect x="-3" y="-11" width="6" height="4" rx="1" fill="#8A3A1A"/></g>
     </svg>
   </a>
@@ -345,29 +314,28 @@
   <a class="tile" href="california-kemping.html">
     <div class="tHead">
       <div>
-        <div class="model" style="color:#00F0FF">California</div>
+        <div class="model" style="color:#00b8c4">California</div>
         <div class="game">Wyjazd z kempingu · łamigłówka</div>
       </div>
       <span class="go">GRAJ ›</span>
     </div>
     <svg class="art" viewBox="0 0 300 96" preserveAspectRatio="xMidYMax meet">
-      <rect width="300" height="96" fill="transparent"/>
+      <rect width="300" height="96" fill="#111"/>
       <circle cx="262" cy="22" r="13" fill="#FFE9B0"/>
-      <path d="M0 96 L0 76 Q80 58 160 72 Q230 84 300 70 L300 96 Z" fill="#152e38"/>
-      <g transform="translate(24,42)"><path d="M0 40 L16 6 L32 40 Z" fill="#C4653F"/><path d="M16 6 L23 40 L10 40 Z" fill="#00000022"/></g>
-      <ellipse cx="160" cy="88" rx="100" ry="5" fill="#00000077"/>
-      <path d="M84 50 L108 30 L206 30 L218 50 Z" fill="#E8E2D2"/>
-      <path d="M88 50 L110 33 M98 50 L118 35" stroke="#D46A42" stroke-width="3" opacity=".7"/>
-      <path d="M70 82 L70 54 Q70 46 82 44 L196 42 L220 56 L242 60 Q250 62 250 70 L250 82 Z" fill="#00A3B0"/>
-      <path d="M70 66 L250 66 L250 82 L70 82 Z" fill="#EAEFFF"/>
-      <rect x="130" y="46" width="42" height="15" rx="3" fill="#13273D"/>
-      <rect x="84" y="46" width="42" height="15" rx="3" fill="#13273D"/>
-      <circle cx="106" cy="84" r="12" fill="#050B14"/><circle cx="106" cy="84" r="6" fill="#8FA0b5"/>
-      <circle cx="216" cy="84" r="12" fill="#050B14"/><circle cx="216" cy="84" r="6" fill="#8FA0b5"/>
+      <path d="M0 96 L0 78 Q80 60 160 74 Q230 86 300 72 L300 96 Z" fill="#14262e"/>
+      <g transform="translate(24,44)"><path d="M0 38 L15 6 L30 38 Z" fill="#C4653F"/><path d="M15 6 L22 38 L9 38 Z" fill="#00000033"/></g>
+      <path d="M84 52 L108 32 L206 32 L218 52 Z" fill="#E8E2D2"/>
+      <path d="M88 52 L110 35 M98 52 L118 37" stroke="#D46A42" stroke-width="3" opacity=".7"/>
+      <path d="M70 82 L70 56 Q70 48 82 46 L196 44 L220 58 L242 62 Q250 64 250 72 L250 82 Z" fill="#00a3b0"/>
+      <path d="M70 68 L250 68 L250 82 L70 82 Z" fill="#EAEFFF"/>
+      <rect x="130" y="48" width="42" height="15" rx="3" fill="#0a1420"/>
+      <rect x="84" y="48" width="42" height="15" rx="3" fill="#0a1420"/>
+      <circle cx="106" cy="84" r="12" fill="#000"/><circle cx="106" cy="84" r="6" fill="#555"/>
+      <circle cx="216" cy="84" r="12" fill="#000"/><circle cx="216" cy="84" r="6" fill="#555"/>
     </svg>
   </a>
 
-  <footer>Wersja demonstracyjna · Grafiki poglądowe · Gry edukacyjne</footer>
+  <footer>Wersja demonstracyjna · Garaż VW</footer>
 </div>
 
 <script>
@@ -377,7 +345,7 @@ for(const href in MAP){
  const a=document.querySelector('a[href="'+href+'"]');if(!a)continue;
  let r=[];try{r=JSON.parse(localStorage.getItem("vwrank_"+MAP[href]))||[];}catch(e){}
  if(r.length){const d=document.createElement("div");d.className="best";
-  d.innerHTML="🏆 Rekord: <b>"+r[0].s+" pkt</b> — "+r[0].n;a.appendChild(d);}
+  d.innerHTML="🏆 Najlepszy wynik: <b>"+r[0].s+" pkt</b> przez "+r[0].n;a.appendChild(d);}
 
  (function(anchor,key){
   const im=new Image();
