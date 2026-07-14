@@ -110,18 +110,12 @@
 
   #introPhoto{display:none;width:78%;max-width:280px;height:120px;object-fit:contain;margin:8px auto 2px;
     filter:drop-shadow(0 12px 8px rgba(0,0,0,.35))}
-
-  #sndBtn{position:absolute;top:12px;right:58px;z-index:60;width:38px;height:38px;border-radius:50%;
-    border:2px solid #E3A72F;background:#193251;color:#fff;font-size:17px;line-height:1;
-    box-shadow:0 4px 0 rgba(11,27,46,.5);cursor:pointer;display:flex;align-items:center;justify-content:center}
-  #sndBtn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(11,27,46,.5)}
 </style>
 </head>
 <body>
 <div id="wrap"><div id="app">
   <a id="backMenu" href="index.html">‹ Garaż</a>
-  <button id="sndBtn" title="Dźwięk">🔊</button>
-
+  
 
   <!-- INTRO POZIOMU -->
   <div class="screen on" id="sStory">
@@ -508,11 +502,6 @@ function rankShow(){const i=document.getElementById("nameInp"),b=document.getEle
 (function(){var im=new Image();im.onload=function(){var el=document.getElementById("introPhoto"),sv=document.getElementById("introScene");
  if(el){el.src="california1.png";el.style.display="block";}if(sv)sv.style.display="none";};im.src="california1.png";})();
 
-/* przełącznik dźwięku */
-(function(){function bind(){var btn=document.getElementById("sndBtn");if(!btn)return;
- var on=true;btn.onclick=function(){on=!on;btn.textContent=on?"🔊":"🔇";
-  if(SFX&&SFX.setMute)SFX.setMute(!on);};}
- if(document.readyState!=="loading")bind();else document.addEventListener("DOMContentLoaded",bind);})();
 </script>
 </body>
 </html>
