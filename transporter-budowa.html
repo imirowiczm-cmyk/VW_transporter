@@ -466,10 +466,10 @@ function depotUI(){
 }
 document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{
  const t=b.dataset.p,add=t==="b"?BRICK_KG:CONC_KG;
- if(load()+add<=cap()*OVER){t==="b"?S.loadB++:S.loadC++;depotUI();}
- else toast("Więcej się nie zmieści — zawieszenie by tego nie przeżyło!");});
+ if(load()+add<=cap()*OVER){t==="b"?S.loadB++:S.loadC++;depotUI();if(window.SFX)SFX.click();}
+ else{toast("Więcej się nie zmieści — zawieszenie by tego nie przeżyło!");if(window.SFX)SFX.angry();}});
 document.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{
- const t=b.dataset.m;if(t==="b"&&S.loadB>0)S.loadB--;if(t==="c"&&S.loadC>0)S.loadC--;depotUI();});
+ const t=b.dataset.m;var ch=false;if(t==="b"&&S.loadB>0){S.loadB--;ch=true;}if(t==="c"&&S.loadC>0){S.loadC--;ch=true;}depotUI();if(ch&&window.SFX)SFX.blip();});
 $("bGo").onclick=()=>{if(load()===0){toast("Załaduj coś najpierw — budowa czeka!");return;}startTrip(1);};
 
 /* ====== JAZDA ====== */
